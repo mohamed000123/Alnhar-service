@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>notification</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+
+      form {
+        background-color: #fff;
+        margin-top: 10px;
+        width: 70%;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: auto;
+        margin-top: 17px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+
+      input {
+        width: 100%;
+        padding: 18px;
+        margin-bottom: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        outline: none;
+      }
+      input:focus {
+        border: 2px solid blue;
+        outline: none;
+      }
+      button {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      #submittedData {
+        background-color: #007bffb9;
+        width: 0%;
+        height: 70px;
+        margin: auto;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="submittedData"></div>
+    <form id="myForm">
+      <label for="body">notification title</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        required
+        placeholder="notification title"
+      /><br />
+      <label for="body">notification body</label>
+      <input
+        type="text"
+        id="body"
+        name="body"
+        required
+        placeholder="notification message"
+      /><br />
+      <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+  </body>
+  <script>
+    function submitForm() {
+      const title = document.getElementById("title");
+      const body = document.getElementById("body");
+      const formData = new FormData(document.getElementById("myForm"));
+      if (title.value && body.value) {
+        fetch(`/send-notification?title=${title.value}&body=${body.value}`, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const submittedDataDiv = document.getElementById("submittedData");
+            submittedDataDiv.style.width = "96%";
+            submittedDataDiv.innerHTML = `
+            <h1>${data}</h1>
+          `;
+            setTimeout(() => {
+              submittedDataDiv.style.width = 0;
+            }, 4000);
+          })
+          .catch((error) => console.error("Error submitting form:", error));
+      } else {
+        alert("Please fill out all fields");
+      }
+    }
+  </script>
+</html>
