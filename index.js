@@ -10,7 +10,7 @@ admin.initializeApp({
 
 const app = express();
 
-app.listen("8000", () => {
+app.listen("469", () => {
   console.log("server is running on port 8000");
 });
 
