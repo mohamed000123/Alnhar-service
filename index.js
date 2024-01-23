@@ -1,19 +1,12 @@
-import express from "express";
-import dotenv from "dotenv";
-import admin from "firebase-admin";
-import { readFileSync } from "fs";
-
+const express = require("express");
+const admin = require("firebase-admin");
+const fs = require("fs");
 const serviceAccount = JSON.parse(
-  readFileSync(
-    "C:/Users/Besso/OneDrive/Desktop/Alnhar-service/firebase-adminsdk.json",
-    "utf-8"
-  )
+  fs.readFileSync("./firebase-adminsdk.json", "utf-8")
 );
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
-
-dotenv.config();
 
 const app = express();
 
@@ -47,15 +40,17 @@ app.post("/send-notification", (req, res) => {
     admin
       .messaging()
       .send(message)
-      .then((response) => {
-        console.log("Successfully sent message:", response);
-        res.status(200).json(`notification has been sent successfully`);
+      .then(() => {
+        res.status(200).json({
+          success: true,
+          message: "notification has been sent successfully",
+        });
       })
       .catch((error) => {
         console.error("Error sending message:", error);
         res
           .status(500)
-          .json({ success: false, error: "Error sending notification" });
+          .json({ success: false, message: "Error sending notification" });
       });
   } catch (err) {
     res.status(500).send(`sending error:  ${err}`);
